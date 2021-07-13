@@ -138,13 +138,18 @@ namespace BAI_1_2_CRUD_TAIKHOAN.View
         // button add accounts
         private void btnThem_Click(object sender, EventArgs e)
         {
-            checkAcc();
+            _status = true;
+            if (checkAcc() == false)
+            {
+                return;
+            }
             _ISVAccount.addAccount(resultAccount(), _lstAccounts);
             resetFormMain();
         }
         // button update click
         private void btnSua_Click(object sender, EventArgs e)
         {
+            _status = true;
             int index = _ISVAccount.findAccount(txtTK.Text, _lstAccounts);
             _lstAccounts[index].Pass = txtMK.Text;
             _lstAccounts[index].Sex = rdSexNam.Checked == true ? 0 : 1;
@@ -155,6 +160,7 @@ namespace BAI_1_2_CRUD_TAIKHOAN.View
         // button remove click
         private void btnXoa_Click(object sender, EventArgs e)
         {
+            _status = true;
             int index = _ISVAccount.findAccount(txtTK.Text, _lstAccounts);
             _lstAccounts.RemoveAt(index);
             resetFormMain();
@@ -194,10 +200,24 @@ namespace BAI_1_2_CRUD_TAIKHOAN.View
         // check informations account in the form
         bool checkAcc()
         {
+            bool status = false;
             //
             // check text
             //
             #region check form and add account
+            _lstAccounts.ForEach(z =>
+            {
+                if (z.Acc == txtTK.Text)
+                {
+                    MessageBox.Show("Tài khoản đã tồn tại.", "Thông báo.");
+                    status = true;
+                    return;
+                }
+            });
+            if (status == true)
+            {
+                return false;
+            }
             // check length of Account and Password with a length greater than 6
             if (txtTK.Text.Length < 6 || txtMK.Text.Length < 6)
             {
